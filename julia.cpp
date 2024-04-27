@@ -27,11 +27,11 @@ void JuliaWidget::wheelEvent(QWheelEvent *event) {
     int mouseY = pos.y();
 
     double scaleFactor = (event->angleDelta().y() > 0) ? 1.1 : 0.9;
-    zoomFactor *= scaleFactor;
+    double zoom = zoomFactor * scaleFactor;
 
     // Обновляем границы фрактала и перерисовываем его
-    double dx = (xmax - xmin) * (1.0 / zoomFactor - 1.0) / 2.0;
-    double dy = (ymax - ymin) * (1.0 / zoomFactor - 1.0) / 2.0;
+    double dx = (xmax - xmin) * (1.0 / zoom - 1.0) / 2.0;
+    double dy = (ymax - ymin) * (1.0 / zoom - 1.0) / 2.0;
 
     // Вычисляем позицию курсора относительно размеров виджета
     double relativeX = static_cast<double>(mouseX) / width();
@@ -69,7 +69,7 @@ QImage JuliaWidget::generateFractal(double cReal, double cImag, double xmin, dou
                 z.imag(ymin + y * dy); // Преобразование экранных координат в комплексные
 
                 int iterations = 0;
-                while ((iterations < maxIterations) && (std::abs(z) < 4)) {
+                while (iterations < maxIterations && abs(z) < 2) {
                     z = z * z + c;
                     ++iterations;
                 }

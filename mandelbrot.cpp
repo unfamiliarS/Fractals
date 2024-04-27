@@ -27,11 +27,11 @@ void MandelbrotWidget::wheelEvent(QWheelEvent *event) {
     int mouseY = pos.y();
 
     double scaleFactor = (event->angleDelta().y() > 0) ? 1.1 : 0.9;
-    zoomFactor *= scaleFactor;
+    double zoom = zoomFactor * scaleFactor;
 
     // Обновляем границы фрактала и перерисовываем его
-    double dx = (xmax - xmin) * (1.0 / zoomFactor - 1.0) / 2.0;
-    double dy = (ymax - ymin) * (1.0 / zoomFactor - 1.0) / 2.0;
+    double dx = (xmax - xmin) * (1.0 / zoom - 1.0) / 2.0;
+    double dy = (ymax - ymin) * (1.0 / zoom - 1.0) / 2.0;
 
     // Вычисляем позицию курсора относительно размеров виджета
     double relativeX = static_cast<double>(mouseX) / width();
@@ -62,11 +62,11 @@ QImage MandelbrotWidget::generateFractal(double pReal, double pImag, double xmin
                 int iterations = 0;
 
                 while (abs(z) < 2.0 && iterations < maxIterations) {
-                    z = pow(z, p) + c;
+                    z = z * z + c;
                     ++iterations;
                 }
 
-                QColor color = colorForIterations(iterations, maxIterations);
+                QColor color = colorForIterations1(iterations, maxIterations);
                 image.setPixelColor(x, y, color);
             }
         }
