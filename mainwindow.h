@@ -15,19 +15,19 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-public slots:
+private slots:
     void onCreateMandelbrotFractalButtonClicked();
     void onCreateJuliaFractalButtonClicked();
-    void onApplyParameters(double real, double img, double xmin, double xmax, double ymin, double ymax, int maxIterations);
+    void useEmitParameters(double real, double img, double xmin, double xmax, double ymin, double ymax, int maxIterations);
 
 private:
     Ui::MainWindow *ui;
     double defaultReal, defaultImg, defaultXmin, defaultXmax, defaultYmin, defaultYmax;
     int defaultMaxIterations;
-    Setting fractalDialog;
+    Setting settingsDialog;
     enum FractalType { Julia, Mandelbrot };
     FractalType lastFractalType;
 };

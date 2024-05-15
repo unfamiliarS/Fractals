@@ -3,22 +3,17 @@
 
 #include "fractal.h"
 
-#include <vector>
-
 class JuliaWidget : public QWidget, public Fractal {
     Q_OBJECT
 
 public:
     JuliaWidget(double real, double imag, double xmin, double xmax, double ymin, double ymax, int maxIterations, QWidget *parent = nullptr);
-
-protected:
+    ~JuliaWidget() override;
     QImage generateFractal(double cReal, double cImag, double xmin, double xmax, double ymin, double ymax, int width, int height, int maxIterations) override;
-    void paintEvent(QPaintEvent *event) override;
-    void wheelEvent(QWheelEvent *event) override;
 
 private:
-    double real, imag, xmin, xmax, ymin, ymax, zoomFactor;
-    int maxIterations;
+    void paintEvent(QPaintEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 };
 
 #endif // JULIA_H

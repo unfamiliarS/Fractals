@@ -8,10 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     connect(ui->mandelbrot, &QPushButton::clicked, this, &MainWindow::onCreateMandelbrotFractalButtonClicked);
     connect(ui->julia, &QPushButton::clicked, this, &MainWindow::onCreateJuliaFractalButtonClicked);
-    connect(&fractalDialog, &Setting::appliedParameters, this, &MainWindow::onApplyParameters);
+    connect(&settingsDialog, &Setting::appliedParameters, this, &MainWindow::useEmitParameters);
 }
 
 MainWindow::~MainWindow()
@@ -20,7 +19,6 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::onCreateJuliaFractalButtonClicked() {
-    // Установка параметров фрактала по умолчанию
     lastFractalType = Julia;
     defaultReal = 0.38;
     defaultImg = 0.25;
@@ -29,8 +27,10 @@ void MainWindow::onCreateJuliaFractalButtonClicked() {
     defaultYmin = -1.5;
     defaultYmax = 1.5;
     defaultMaxIterations = 100;
-    fractalDialog.setDefaultParameters(defaultReal, defaultImg, defaultXmin, defaultXmax, defaultYmin, defaultYmax, defaultMaxIterations);
-    fractalDialog.show();
+    settingsDialog.setDefaultParameters(defaultReal, defaultImg, defaultXmin, defaultXmax, defaultYmin, defaultYmax, defaultMaxIterations);
+    settingsDialog.show();
+
+    this->hide();
 }
 
 void MainWindow::onCreateMandelbrotFractalButtonClicked() {
@@ -42,18 +42,27 @@ void MainWindow::onCreateMandelbrotFractalButtonClicked() {
     defaultYmin = -1.5;
     defaultYmax = 1.5;
     defaultMaxIterations = 100;
-    fractalDialog.setDefaultParameters(defaultReal, defaultImg, defaultXmin, defaultXmax, defaultYmin, defaultYmax, defaultMaxIterations);
-    fractalDialog.show();
+    settingsDialog.setDefaultParameters(defaultReal, defaultImg, defaultXmin, defaultXmax, defaultYmin, defaultYmax, defaultMaxIterations);
+    settingsDialog.show();
+
+    this->hide();
 }
 
-void MainWindow::onApplyParameters(double real, double img, double xmin, double xmax, double ymin, double ymax, int maxIterations) {
+void MainWindow::useEmitParameters(double real, double img, double xmin, double xmax, double ymin, double ymax, int maxIterations) {
     if (lastFractalType == Julia) {
-        JuliaWidget *juliaWidget = new JuliaWidget(real, img, xmin, xmax, ymin, ymax, maxIterations, parentWidget());
-        juliaWidget->show();
+        JuliaWidget juliaWidget(real, img, xmin, xmax, ymin, ymax, maxIterations, nullptr);
+        juliaWidget.show();
+        while (juliaWidget.isVisible()) {
+            QCoreApplication::processEvents();
+        }
     } else if (lastFractalType == Mandelbrot) {
-        MandelbrotWidget *mandelbrotWidget = new MandelbrotWidget(real, img, xmin, xmax, ymin, ymax, maxIterations, parentWidget());
-        mandelbrotWidget->show();
+        MandelbrotWidget mandelbrotWidget(real, img, xmin, xmax, ymin, ymax, maxIterations, nullptr);
+        mandelbrotWidget.show();
+        while (mandelbrotWidget.isVisible()) {
+            QCoreApplication::processEvents();
+        }
     }
+    this->show();
 }
 
 int main(int argc, char *argv[]) {
